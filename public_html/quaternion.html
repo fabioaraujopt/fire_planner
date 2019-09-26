@@ -1,0 +1,17 @@
+<script>
+    
+    var quaternion = {y: 0.01828393132360283, x: -0.01554224074472984, z: -0.36470360423103654, w: -0.9308143841115037};
+
+
+
+    var toEulerAngles = function(quaternion) {
+        var euler = quaternion.toEulerAngles();
+        euler.x = euler.x == 0 ? 0 : (euler.x * 180) / Math.PI;
+        euler.y = euler.y == 0 ? 0 : (euler.y * 180) / Math.PI;
+        euler.z = euler.z == 0 ? 0 : (euler.z * 180) / Math.PI;
+        //
+        return euler;
+    };
+
+
+</script>

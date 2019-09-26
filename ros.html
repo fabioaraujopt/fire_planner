@@ -1,0 +1,46 @@
+
+<script src="https://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+
+
+<script>
+ 
+    var ros = new ROSLIB.Ros({
+       url : 'ws://192.168.1.199:9090'
+    });
+    
+    ros.on('connection', function() {
+      console.log('Connected');
+    });
+
+    var listener = new ROSLIB.Topic({
+          ros : ros,
+          name : '/dji_sdk/gps_position',
+          messageType : 'sensor_msgs/NavSatFix'
+    });
+    
+    listener.subscribe(function(message) {
+        console.log('Received message on ' + listener.name + ': ' + message.latitude);
+        listener.unsubscribe();
+    });
+    //${JSON.stringify(message)`
+    
+    ros.getTopics(function(topics) {
+        console.log(topics);
+    });
+  
+     
+    /*
+    var websocket = new WebSocket("ws://echo.websocket.org");
+    
+    websocket.onopen = function(evt) { console.log("connection stablished");};
+    websocket.onclose = function(evt) { console.log("connection closed"); };
+    websocket.onclose = function(evt) { console.log("connection closed"); };
+    websocket.onmessage = function(evt) { console.log(evt.data) };
+    */
+    
+    /*
+    ros.on('connection', function() {
+        console.log('Connected to websocket server.');
+    });
+    */
+</script>
