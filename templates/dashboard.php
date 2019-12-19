@@ -69,7 +69,7 @@
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
 
-              <li class="nav-item dropdown no-arrow mx-1">
+              <li class="nav-item dropdown no-arrow mx-1" id="alerts_button">
                   <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <i class="fas fa-bell fa-fw"></i>
                       <!-- Counter - Alerts -->
@@ -81,73 +81,6 @@
                           Alerts Center
                       </h6>
                       <div id="alerts_div" style="height:20em;overflow-y: scroll;">
-                          <div class="notification_element dropdown-item">
-                          <div class="d-flex align-items-center" href="#">
-                              <div class="mr-3">
-                                  <div class="icon-circle bg-warning">
-                                      <i class="fas fa-times"></i>
-                                  </div>
-                              </div>
-                              <div>
-                                  <div class="small text-gray-500">Now</div>
-                                  <div>Fire Detected in coordinates: XXX</div>
-                              </div>
-
-                          </div>
-                              <button class="btn btn-primary btn-sm float-right">Ignore</button>
-                              <button class="btn btn-primary btn-sm float-right">Ignore</button>
-                              <button class="btn btn-primary btn-sm float-right">Ignore</button>
-                              
-                          </div>
-                          <div class="notification_element dropdown-item">
-                              <div class="d-flex align-items-center" href="#">
-                                  <div class="mr-3">
-                                      <div class="icon-circle bg-warning">
-                                          <i class="fas fa-times"></i>
-                                      </div>
-                                  </div>
-                                  <div>
-                                      <div class="small text-gray-500">Now</div>
-                                      <div>Fire Detected in coordinates: XXX</div>
-                                  </div>
-
-                              </div>
-                              <button class="btn btn-primary btn-sm float-right">Ignore</button>
-                              <button class="btn btn-primary btn-sm float-right">Ignore</button>
-                              <button class="btn btn-primary btn-sm float-right">Ignore</button>
-
-                          </div>
-                          <div class="notification_element dropdown-item">
-                              <div class="d-flex align-items-center" href="#">
-                                  <div class="mr-3">
-                                      <div class="icon-circle bg-warning">
-                                          <i class="fas fa-times"></i>
-                                      </div>
-                                  </div>
-                                  <div>
-                                      <div class="small text-gray-500">Now</div>
-                                      <div>Fire Detected in coordinates: XXX</div>
-                                  </div>
-
-                              </div>
-                              <button class="btn btn-primary btn-sm float-right">Ignore</button>
-                              <button class="btn btn-primary btn-sm float-right">Ignore</button>
-                              <button class="btn btn-primary btn-sm float-right">Ignore</button>
-
-                          </div>
-                          <a class="dropdown-item d-flex align-items-center" href="#">
-                              <div class="mr-3">
-                                  <div class="icon-circle bg-warning">
-                                      <i class="fas fa-times"></i>
-                                  </div>
-                              </div>
-                              <div>
-                                  <div class="small text-gray-500">Now</div>
-                                  
-                                 
-                              </div>
-
-                          </a>
                           
                       </div>
                   </div>
@@ -289,23 +222,19 @@
 
   <!-- Core plugin JavaScript-->
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.7/jquery.timeago.js"></script>
+  
 
   <!-- Custom scripts for all pages-->
   <script src="js/sb-admin-2.min.js"></script>
+  <script src="js/moment.js"></script>
+  <script src="js/alerts.js"></script>
 
-    <script>
-        var message= "Hey";
-        var time= "now";
-        var alert_icons=['<i class="fas fa-times"></i>','<i class="fas fa-fire"></i>'];
-            //hide notify
-        //$("#alert_number").hide();
-            //show notify
-        //$("#alert_number").show();
-            //change notify value
-        //$("#alert_number").html("6+");
-        $("#alerts_div").append('<a class="dropdown-item d-flex align-items-center" href="#"><div class="mr-3"><div class="icon-circle bg-danger"><i class="fas fa-times"></i></div></div><div><div class="small text-gray-500">'+time+'</div>'+message+'</div></a>');
-        
-    </script>
+  <script src="https://geographiclib.sourceforge.io/scripts/geographiclib.js"></script>
+  <script src="js/fire_filter.js"></script>
+
+
+<?php include "modals.html"; ?>
 
 </body>
 

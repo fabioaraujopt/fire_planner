@@ -11,6 +11,10 @@
         width:20px;
         height:20px;
     }
+    
+    .btn{
+        margin:2px;
+    }
 
 </style>
 
@@ -31,18 +35,83 @@ if(isset($_SESSION['lat']) && isset($_SESSION['lng']) && isset($_SESSION['zoom']
 
 <!--Map Buttons-->
 <div class="mb-2">
-    <a href="#" class="btn btn-danger btn-circle" id="trucks_toogle_button" style="background-color: orange;border-color: orange;">
+    <a href="#" class="btn btn-danger btn-circle float-left" id="trucks_toogle_button" style="background-color: orange;border-color: orange;">
         <i class="fa fa-truck"></i>
     </a>
-    <a href="#" class="btn btn-warning btn-circle icon_drone" id="drones_toogle_button" style="background-color: #dede00;border-color:#dede00;">
+    <a href="#" class="btn btn-warning btn-circle icon_drone float-left" id="drones_toogle_button" style="background-color: #dede00;border-color:#dede00;">
         <img class="button_image" src="icon/drone_white.svg">
     </a>
-    <a href="#" class="btn btn-info btn-circle icon_sensor" id="sensors_toogle_button">
+    <a href="#" class="btn btn-info btn-circle icon_sensor float-left" id="sensors_toogle_button">
         <img class="button_image" src="icon/sensor_white.svg">
     </a>
-    <a href="#" class="btn btn-danger btn-circle icon_fire" id="flame_toogle_button">
+    <a href="#" class="btn btn-danger btn-circle icon_fire float-left" id="flame_toogle_button">
         <i class="fas fa-fire"></i>
     </a>
+
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle float-left" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-cog"></i>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <div class="dropdown-item">Fire distance 
+                <select class="float-right" id="threshold_value">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="300">300</option>
+                    <option value="400">400</option>
+                    <option value="500">500</option>
+                    <option value="700">700</option>
+                </select>
+                <select class="float-right" id="threshold_unit">
+                    <option value="1">m</option>
+                    <option value="1000">km</option>
+                </select>
+            </div>
+            <div class="dropdown-item">Fire detection time
+                <select class="float-right" id="threshold_value">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="30">30</option>
+                    <option value="45">45</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="300">300</option>
+                </select>
+                <select class="float-right" id="threshold_unit">
+                    <option value="1">m</option>
+                    <option value="10">h</option>
+                    <option value="100">d</option>
+                </select>
+            </div>
+            <div class="dropdown-item">Geotiff Time
+                <select class="float-right" id="threshold_value">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="30">30</option>
+                    <option value="45">45</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="300">300</option>
+                </select>
+                <select class="float-right" id="threshold_unit">
+                    <option value="1">m</option>
+                    <option value="10">h</option>
+                    <option value="100">d</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
     <a href="#" class="btn btn-primary pull-right" id="rgb_button">
         <span class="text">RGB</span>
     </a>
@@ -54,32 +123,15 @@ if(isset($_SESSION['lat']) && isset($_SESSION['lng']) && isset($_SESSION['zoom']
     </a>
 </div>
 
+<script>
+    $('.dropdown-menu').on('click', function(e) {
+        e.stopPropagation();
+    });
+</script>
+
 <!--Map-->
 <div id="map" style="width:100%;height: 68%;" ></div>
 <p><a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a></p>
-
-
-<!--Live Image Modal -->
-<div class="modal fade" id="liveImageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Live Image</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body" style="display: flex; justify-content: center; height:25em;">
-                <img src="" id="liveFrame" alt="" onerror="this.src='icon/no_connection.png';" style="max-width:100%">
-            </div>
-            <div class="modal-footer">
-                <form action="?" method="post">
-                    <div id="saveFrameButton" style="cursor:pointer" class="btn btn-info">Save Frame</div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 <!--Map scripts-->
@@ -91,8 +143,52 @@ if(isset($_SESSION['lat']) && isset($_SESSION['lng']) && isset($_SESSION['zoom']
     //TODO
     //* notifications (fire-> timer to db look for new detections and lost devices->try again/ignore)
     //* save map location in session
-    
-    
+
+    class fireMarker{
+        //data {longitude:123123}
+        constructor(map_marker,map,data,index){
+            this.marker= map_marker;
+            this.map = map;
+            this.data = data;
+            this.device_categories_index=index;
+
+            this.updateInfo();
+        }
+
+        toogle(){
+            if (this.map.hasLayer(this.marker)) {
+                this.map.removeLayer(this.marker)
+            } else {
+                this.map.addLayer(this.marker)
+            }
+        }
+
+        updateInfo(){
+            var info ="";
+
+            if("latitude" in this.data && "longitude" in this.data) {
+                info =info + '<div>GPS: ' + this.data['latitude'].toFixed(6) + ' ' + this.data['longitude'].toFixed(6);
+            }
+            if ("altitude" in this.data) {
+                info = info + '<div>Altitude: ' + Math.round(this.data['altitude']) + '</div>';
+            }
+            if ("time" in this.data) {
+                info = info + '<div>Report Time: ' + this.data['time'] + '</div>';
+            }
+            if("image" in this.data){
+                info = info + '<div class="btn btn-primary btn-sm" onclick="showImage('+this.device_categories_index+')">' +
+                    '<span class="text">Image</span>' +
+                    '</div>';
+            }
+            this.marker.bindPopup(info);
+        }
+
+        showImage(){
+            console.log("hey!");
+            $("#detectionImageModal").modal('show');
+            $("#detectedImage").attr('src',this.data.image);
+        }
+    }
 
     //known messages may be loaded from PHP DB
     var msgs =
@@ -121,6 +217,7 @@ if(isset($_SESSION['lat']) && isset($_SESSION['lng']) && isset($_SESSION['zoom']
     ];
     
     //marker Class (everything related to the marker) 
+    //device marker
     //this.state = 0 means that device is out
     class marker {
         constructor(lflt_marker, map, msgs, device, hasImage = false) {
@@ -133,6 +230,8 @@ if(isset($_SESSION['lat']) && isset($_SESSION['lng']) && isset($_SESSION['zoom']
             this.map = map;
             this.latest_update=this.getTime();
             this.state="";
+            this.sent_alert=0;
+            this.second_alert=0;
             
 
             this.run();
@@ -146,12 +245,18 @@ if(isset($_SESSION['lat']) && isset($_SESSION['lng']) && isset($_SESSION['zoom']
                 && this.data.constructor === Object 
                 && ((Math.abs(new Date(this.latest_update) - new Date(this.getTime())))>milisecs_after_5_iterations))
             {
-                console.log(this.device.name, 'not sending data');
+                if(!this.sent_alert){
+                    addAlert(1,this.device.name+' is not connected!');
+                    this.sent_alert=1;
+                }
                 info = info + '<span style="font-weight: bold;">Device not connected</span>';
                 this.state=0;
             }
-            else if(Math.abs(new Date(this.latest_update) - new Date(this.getTime())>3000)){
-                console.log(this.device.name, 'not sending data for more than 5minutes');
+            else if(Math.abs(new Date(this.latest_update) - new Date(this.getTime())>50000)){
+                if(!this.second_alert){
+                    addAlert(1,this.device.name+' is not connected!');
+                    this.second_alert=1;
+                }
                 this.state=0;
             }else {
                 this.state=1;
@@ -175,15 +280,13 @@ if(isset($_SESSION['lat']) && isset($_SESSION['lng']) && isset($_SESSION['zoom']
             
             this.marker.bindPopup(info);
         }
-            
-        
         
         imageConnect() {
             //open modal
             var ros = new ROSLIB.Ros({
                 url : 'ws://'+this.device.image_ip+':9090'
             });
-
+            
             ros.on('connection', function() {
                 
                 //clean_modal
@@ -214,9 +317,7 @@ if(isset($_SESSION['lat']) && isset($_SESSION['lng']) && isset($_SESSION['zoom']
             listener.unsubscribe(this.imageReceiver());
         }
     
-    
-    
-
+        
         updateLocation() {
             try {
                 this.marker.setLatLng([this.data['latitude'], this.data['longitude']]).update();
@@ -252,15 +353,11 @@ if(isset($_SESSION['lat']) && isset($_SESSION['lng']) && isset($_SESSION['zoom']
                                 self.data[variable]= request_result[variable];
                             });
                         }
-                         
                     });
-                    //console.log('Device Latitude ' + ': ' + result.deviceState.currentLocation.latitude);
-                    //console.log('Device Longitude ' + ': ' + result.deviceState.currentLocation.longitude);
                     var time=self.getTime();
                     self.data['time'] = time; 
                     self.latest_update= time;
                 });
-                
                 self.updateInfo();
                 self.updateLocation();
             }, self.time);
@@ -282,8 +379,16 @@ if(isset($_SESSION['lat']) && isset($_SESSION['lng']) && isset($_SESSION['zoom']
             ros.connect('ws:/'+element.ip+'/');
             websockets.push([element.ip, ros]);
             element.socket= ros;
+            ros.on('error', function(error) {
+                console.log('Error connecting to websocket server: ', error);
+            });
         }
+        
     });
+
+
+    
+    
     //[device_name,service_client]
     var service_clients = [];
     devices.forEach(function(element){
@@ -306,9 +411,32 @@ if(isset($_SESSION['lat']) && isset($_SESSION['lng']) && isset($_SESSION['zoom']
         )]);
         
     });
+    
+    var detections=[];
+    <?php
+    foreach($conn->query("select * from detection_images LEFT JOIN detection_status on detection_images.status=detection_status.status_id") as $row){
+        ?>
+        var latitude=<?php echo $row['center_lat']; ?>;
+        var longitude=<?php echo $row['center_lng']; ?>;
+        var altitude=<?php echo $row['altitude']; ?>;
+        var time='<?php echo $row['image_time']; ?>';
+        var path='<?php echo $row['image_path']; ?>';
+        detections.push([latitude,longitude]);
+        index= devices_categories.length;
+        devices_categories.push(['flame',
+            new fireMarker(
+                L.marker([latitude, longitude], {icon: icons['flame']}),
+                map,
+                {
+                    'latitude':latitude,'longitude':longitude,'altitude':altitude,'time':time,
+                    'image': 'detection_images/'+path
+                },
+                index
+            )]);
+    <?php } ?>
 
-    L.marker([38.746946, -9.142775], {icon: icons['sensor']}).addTo(map)
-    L.marker([38.716946, -9.142895], {icon: icons['flame']}).addTo(map)
+    //L.marker([38.746946, -9.142775], {icon: icons['sensor']}).addTo(map);
+    //L.marker([38.716946, -9.142895], {icon: icons['flame']}).addTo(map);
 
     
     //handle for show geotiff images
@@ -348,6 +476,8 @@ if(isset($_SESSION['lat']) && isset($_SESSION['lng']) && isset($_SESSION['zoom']
     $(".geosearch.leaflet-bar.leaflet-control.leaflet-control-geosearch form").css('background','white');
     $(".geosearch.leaflet-bar.leaflet-control.leaflet-control-geosearch form").css('opacity','0.7');
 
+    
+    
     
     
 
@@ -416,5 +546,7 @@ if(isset($_SESSION['lat']) && isset($_SESSION['lng']) && isset($_SESSION['zoom']
   
 </script>
 
+<script src = "js/fire_filter.js"></script>
 
-<script src="js/markers_button_events.js"></script>
+<script src="js/markers_button_events.js"></script> 
+<script src ="js/threshold_listener.js"></script>

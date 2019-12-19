@@ -55,7 +55,7 @@ echo "confirm /masks_inspection / not confirm"
                             <tbody>
                             <?php
                           
-                            foreach ($conn->query("select * from detection_images INNER JOIN detection_status where detection_images.status=detection_status.status_id") as $row){
+                            foreach ($conn->query("select * from detection_images LEFT JOIN detection_status on detection_images.status=detection_status.status_id") as $row){
                                 ?>
                                 <tr role="row" class="odd">
                                     <td class="sorting_1"><?php echo $row['detection_id']; ?></td>
@@ -83,33 +83,6 @@ echo "confirm /masks_inspection / not confirm"
 </div>
 
 
-<div class="modal fade" id="detectionImageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Detection Image</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body" style="display: flex; justify-content: center;">
-               <img src="" id="detectedImage" alt="ImageUnavailable" style="max-width:100%">
-            </div>
-            <div class="modal-footer">
-                <form id="fireStatusForm" action="?" method="post">
-                    <div  id="2" class="btn btn-success fire_confirm">Confirm Fire</div>
-                   
-                    <div  id="3" class="btn btn-warning fire_confirm">Review Mask</div>
-                   
-                    <div  id="4" class="btn btn-danger fire_confirm">False Positive</div>
-                    
-                    <input type="hidden" id="confirmFirePathInput" value="" name="img_fire_path">
-                    <input type="hidden" id="confirmFireInput" value="" name="confirm_fire">
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
   function detectionImage(path) {

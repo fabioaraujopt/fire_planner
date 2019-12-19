@@ -1,4 +1,4 @@
-
+v
 <?php
 
 ini_set('display_errors', 1);
@@ -20,6 +20,7 @@ if($authUser){
         $role = $row['role'];
     }
 }
+
 
 //DEFINIR RANGE DE AVISO
 
@@ -63,10 +64,28 @@ if ($conn != false) {
             
             $ajax_call=1;
         }
-        
         if(isset($_POST['liveImageFrame'])){
             print_r($_POST['liveImageFrame']);
             //save image in DB
+            $ajax_call=1;
+        }
+        if(isset($_POST['new_detection'])){
+            //save image with random id
+            $file_name=md5(uniqid(rand(), true)).'.jpg';
+            file_put_contents('detection_images/'.$file_name, base64_decode($_POST['new_detection']['image']));
+            
+            //convert timestamp to readable time
+            $time=date('Y-m-d H:i:s', $_POST['new_detection']['time']);
+            
+            //get other params
+            $lat = $_POST['new_detection']['lat'];
+            $lng = $_POST['new_detection']['lng'];
+            $altitude = $_POST['new_detection']['altitude'];
+            
+            $prepared=$conn->prepare(
+                'insert into detection_images(image_path,center_lat,center_lng,status,image_time) values (:path,:lat,:lng,1,:time)');
+            $prepared->execute(['lat' => $lat,'lng'=>$lng, 'time' =>$time,'path'=>$file_name]);
+            
             $ajax_call=1;
         }
     }
