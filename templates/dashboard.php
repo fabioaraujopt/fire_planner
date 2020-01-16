@@ -231,7 +231,7 @@
   <script src="js/alerts.js"></script>
 
   <script src="https://geographiclib.sourceforge.io/scripts/geographiclib.js"></script>
-  <script src="js/fire_filter.js"></script>
+
 
 
 <?php include "modals.html"; ?>

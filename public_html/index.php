@@ -1,5 +1,6 @@
-v
 <?php
+
+//TODO first time the map initialiases it breaks as lat and lng are not defined.
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);

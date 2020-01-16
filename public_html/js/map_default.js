@@ -1,4 +1,3 @@
-
 const provider = new window.GeoSearch.OpenStreetMapProvider();
 
 const searchControl = new window.GeoSearch.GeoSearchControl({
@@ -7,11 +6,13 @@ const searchControl = new window.GeoSearch.GeoSearchControl({
     autoCompleteDelay: 250,
 });
 
+
+//TODO session_lat may not exisr and break this shit
 var map = L.map('map').setView([session_lat, session_lng], session_zoom);
 
 map.addControl(searchControl);
 
-L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=jiujn1VoKMBZvyOFPHq3',{
+L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=jiujn1VoKMBZvyOFPHq3', {
     tileSize: 512,
     zoomOffset: -1,
     minZoom: 1,
@@ -20,23 +21,18 @@ L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=jiujn1VoKM
 }).addTo(map);
 
 
-
-map.on('moveend', function(e) {
-   
-    $.ajax({
-        type: "POST",
-        url: "?",
-        data: {'map_position':{'zoom':map._zoom,'lat':map._lastCenter.lat,'lng': map._lastCenter.lng}},
-        success: function (data) {
-            console.log(data);
-        }
-    });
-    
-    
+map.on('moveend', function (e) {
+    if (this._lastCenter != null) {
+        $.ajax({
+            type: "POST",
+            url: "?",
+            data: {'map_position': {'zoom': map._zoom, 'lat': map._lastCenter.lat, 'lng': map._lastCenter.lng}},
+            success: function (data) {
+                console.log("Session Pos Updated");
+            }
+        });
+    }
 });
-
-
-
 
 
 var drone = L.icon({
@@ -49,7 +45,7 @@ var sensor = L.icon({
     iconSize: [20, 20], // size of the icon
 });
 
-var fire_truck=L.divIcon({
+var fire_truck = L.divIcon({
     html: '<i class="fa fa-truck fa-2x" style="color: orange"></i>',
     iconSize: [20, 20],
     className: 'myDivIcon'

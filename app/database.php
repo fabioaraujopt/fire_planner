@@ -6,7 +6,7 @@ Class database
         $servername = "localhost";
         $username = "root";
         $password = "root";
-        $db = "planner_schema";
+        $db = "Planner";
         
         try
         {

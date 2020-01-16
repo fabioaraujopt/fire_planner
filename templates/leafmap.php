@@ -183,6 +183,15 @@ if(isset($_SESSION['lat']) && isset($_SESSION['lng']) && isset($_SESSION['zoom']
             this.marker.bindPopup(info);
         }
 
+        updateLocation() {
+            try {
+                this.marker.setLatLng([this.data['latitude'], this.data['longitude']]).update();
+            } catch (e) {
+
+            }
+
+        }
+
         showImage(){
             console.log("hey!");
             $("#detectionImageModal").modal('show');
@@ -546,7 +555,7 @@ if(isset($_SESSION['lat']) && isset($_SESSION['lng']) && isset($_SESSION['zoom']
   
 </script>
 
-<script src = "js/fire_filter.js"></script>
+
 
 <script src="js/markers_button_events.js"></script> 
 <script src ="js/threshold_listener.js"></script>
