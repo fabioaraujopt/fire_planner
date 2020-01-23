@@ -1,12 +1,11 @@
 <?php
-
 Class database
 {
     public static function mySqlPDO(){
         $servername = "localhost";
         $username = "root";
-        $password = "root";
-        $db = "Planner";
+        $password = "123";
+        $db = "focor_fire_planner";
         
         try
         {
@@ -18,7 +17,8 @@ Class database
         catch
         (PDOException $e)
         {
-            $conn = false;
+		$conn = false;
+		print_r($e);
         }
         return $conn;
     }
